@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lore Files</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.svg" type="image/x-icon">
+  </head>
+  <body>
+    <div class="logo">
+      <a href="https://www.twitch.tv/n0de21" target="_blank">
+        <img src="logo.svg" alt="n0de21 Logo" />
+      </a>
+    </div>
+    <a href="tracklist.html" target="_self" class="side-right">Tracklist →</a>
+
+    <div class="page-title">Lore Files</div>
+    <div class="input">
+      <div id="main">Loading...</div>
+    </div>
+
+    <script>
+      fetch("lore.json")
+        .then((response) => response.json())
+        .then((data) => {
+          const main = document.getElementById("main");
+          main.innerHTML = "";
+
+          data.forEach((phase) => {
+            const section = document.createElement("div");
+            section.className = "phase-section";
+
+            const title = document.createElement("div");
+            title.className = "phase-title";
+            title.innerText = phase.name;
+            section.appendChild(title);
+
+            const loreContainer = document.createElement("div");
+            loreContainer.style.display = "none";
+
+            phase.lore.forEach((item) => {
+              const ref = document.createElement("span");
+              ref.className = "lore-ref";
+              ref.innerText = item.title;
+
+              const block = document.createElement("div");
+              block.className = "lore-block";
+              block.innerText = item.content;
+
+              ref.addEventListener("click", () => {
+                const open = block.classList.contains("visible");
+                block.classList.toggle("visible");
+                ref.classList.toggle("active", !open);
+              });
+
+              loreContainer.appendChild(ref);
+              loreContainer.appendChild(block);
+            });
+
+            if (phase.active !== false) {
+              title.addEventListener("click", () => {
+                const collapsed = !title.classList.contains("expanded");
+                title.classList.toggle("expanded", collapsed);
+                loreContainer.style.display = collapsed ? "block" : "none";
+              });
+            } else {
+              title.style.opacity = 0.3;
+              title.style.cursor = "not-allowed";
+            }
+
+            section.appendChild(loreContainer);
+            main.appendChild(section);
+          });
+        })
+        .catch((err) => {
+          document.getElementById("main").innerText =
+            "Failed to load lore.json.";
+          console.error(err);
+        });
+    </script>
+
+    <div class="bottom-links">
+      <a href="https://www.twitch.tv/n0de21" target="_blank">Stream</a>
+      <a href="https://www.instagram.com/n0de21" target="_blank">IN</a>
+      <a href="https://www.tiktok.com/@n0de21" target="_blank">TK</a>
+      <a href="https://www.youtube.com/@n0de21sync" target="_blank">YT</a>
+    </div>
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "11c560ed23354eaa947d04071870c871"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
